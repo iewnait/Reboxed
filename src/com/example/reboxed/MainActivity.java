@@ -140,7 +140,7 @@ public class MainActivity extends Activity{
 ////        Toast.makeText(AlarmService.this, R.string.repeating_scheduled,
 ////                Toast.LENGTH_LONG).show();
         
-        DataCollectorService collectorService = new DataCollectorService(mEmail, mAuthToken, mHandler);
+        DataCollectorService collectorService = new DataCollectorService(mEmail, mAuthToken, mHandler, getBaseContext());
         collectorService.start();
 
     }

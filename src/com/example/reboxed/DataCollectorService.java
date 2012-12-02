@@ -25,11 +25,15 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import android.app.PendingIntent;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-public class DataCollectorService extends Thread {
+public class DataCollectorService extends Thread implements SensorEventListener {
     
     public static final String TAG = DataCollector.class.getName();
     private String mEmail;
@@ -38,15 +42,31 @@ public class DataCollectorService extends Thread {
     private AnalogInput mADC0;
     private AnalogInput mADC1; 
     private SensorDataHistory mSensorDataHistory;
+    private SensorManager mSensorManager;
+    private Context mActivityContext;
     
     private Handler mHandler;
     
+    private float x = 0;
+    private float y = 0;
+    private float z = 0;
+    private int mAccelerometerHistoryCount = 0;
+    
     private PendingIntent mAlarmSender;
     
-    public DataCollectorService(String email, String authToken, Handler handler){
+    public DataCollectorService(String email, String authToken, Handler handler, Context context){
         this.mEmail = email;
         this.mAuthToken = authToken;
         this.mHandler = handler;
+        this.mActivityContext = context;
+        
+        mSensorManager = (SensorManager) mActivityContext.getSystemService(mActivityContext.SENSOR_SERVICE);
+        
+        mSensorManager.registerListener(this,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+
+        
         this.mSensorDataHistory = new SensorDataHistory(20);
         ioio_ = IOIOFactory.create();
         Log.d(TAG, "Waiting for IOIO");
@@ -114,12 +134,34 @@ public class DataCollectorService extends Thread {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        mSensorManager.unregisterListener(this);
 
     }
 
     private SensorData getSensorData(){
         SensorData data = new SensorData();
-        data.accel = 12315.41f;
+        
+        float avgX = x;       
+        float avgY = y;
+        float avgZ = z;
+        float avgCount = mAccelerometerHistoryCount;
+        
+        x = 0;
+        y = 0;
+        z = 0;
+        mAccelerometerHistoryCount = 0;
+        
+        avgX = avgX/avgCount;
+        avgY = avgY/avgCount;
+        avgZ = avgZ/avgCount;
+        
+        
+        float accelerationSquareRoot = (float) Math.sqrt((avgX * avgX + avgY * avgY + avgZ * avgZ));
+        
+        Log.d(TAG, "avgX "+avgX+" avgY "+avgY + " avgZ "+avgZ+" count "+avgCount + " accel "+accelerationSquareRoot);
+        
+        data.accel = accelerationSquareRoot;
                     
         try {                                        
             data.motion = mADC0.getVoltage();
@@ -177,6 +219,30 @@ public class DataCollectorService extends Thread {
         }
 
         
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            getAccelerometer(event);
+        }
+    
+    }
+    
+    void getAccelerometer(SensorEvent event){
+        float[] values = event.values;
+        // Movement
+         x += values[0];
+         y += values[1];
+         z += values[2];
+         mAccelerometerHistoryCount ++;
+
     }
     
 }
