@@ -57,6 +57,9 @@ public class MainActivity extends Activity{
             GifWebView view = new GifWebView(this, "file:///android_asset/sauron.gif"); 
             setContentView(view);
             
+            mEmail = mAuthCaches.getString(PREF_EMAIL, "EMAILNULL");
+            mAuthToken = mAuthCaches.getString(PREF_AUTHTOKEN, "AUTHTOKENNULL");
+            
             //set alarm
             setAlarm();
             
@@ -143,7 +146,7 @@ public class MainActivity extends Activity{
 //
 ////        // Tell the user about what we did.
 ////        Toast.makeText(AlarmService.this, R.string.repeating_scheduled,
-////                Toast.LENGTH_LONG).show();
+////                Toast.LENGTH_LONG).show();                
         
         DataCollectorService collectorService = new DataCollectorService(mEmail, mAuthToken, mHandler, getBaseContext());
         collectorService.start();

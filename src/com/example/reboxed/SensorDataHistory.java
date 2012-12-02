@@ -1,6 +1,10 @@
 package com.example.reboxed;
 
+import android.util.Log;
+
 public class SensorDataHistory {
+    
+    public static final String TAG = SensorDataHistory.class.getName();
     private final int mHistoryCapacity;
     private final SensorData[] mSensorDataArray;
     private int mCurrentSensorDataIndex = 0;
@@ -46,6 +50,9 @@ public class SensorDataHistory {
             if (mCurrentSensorDataIndex >= mHistoryCapacity) mCurrentSensorDataIndex = 0;
             
             if (mHistoryCount != mHistoryCapacity) mHistoryCount++;
+        }
+        else{
+            Log.d(TAG, "Rejecting data package.");
         }
     } 
 

@@ -169,7 +169,11 @@ public class DataCollectorService extends Thread implements SensorEventListener 
             data.smoke = mADC1.getVoltage();
             Log.d(TAG, "data.motion "+data.motion+" data.smoke"+data.smoke);
             
-        } catch (ConnectionLostException e) {
+        } catch (NullPointerException e) {
+            Log.d(TAG, "ADC is null.");
+            data.motion = 0;
+            data.smoke = 0;
+
         } catch (Exception e) {
             Log.e("HelloIOIOPower", "Unexpected exception caught", e);
             ioio_.disconnect();
@@ -195,7 +199,9 @@ public class DataCollectorService extends Thread implements SensorEventListener 
         nameValuePairs.add(new BasicNameValuePair("motion", Float.toString(data.motion)));
         nameValuePairs.add(new BasicNameValuePair("accel", Float.toString(data.accel)));
         
+        Log.d(TAG, "Sending : "+"user "+mEmail+" device "+mAuthToken);
         try{
+            
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
     
             HttpClient client = new DefaultHttpClient();
@@ -203,7 +209,7 @@ public class DataCollectorService extends Thread implements SensorEventListener 
             HttpEntity entity = response.getEntity();
             String responseText = EntityUtils.toString(entity);
          
-            Log.d(TAG, responseText);
+            Log.d(TAG, "Server Reply: " +responseText);
             mHandler.obtainMessage(1, R.string.sensor_service_finished, -1).sendToTarget();
 
             
