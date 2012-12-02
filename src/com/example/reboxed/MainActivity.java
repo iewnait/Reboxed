@@ -106,25 +106,28 @@ public class MainActivity extends Activity{
     
     private void setAlarm(){
         
-        Intent serviceIntent = new Intent(MainActivity.this, SensorService.class);
+//        Intent serviceIntent = new Intent(MainActivity.this, SensorService.class);
+//        
+//        serviceIntent.putExtra(PREF_AUTHTOKEN, mAuthToken);
+//        serviceIntent.putExtra(PREF_EMAIL, mEmail);
+//        
+//        mAlarmSender = PendingIntent.getService(MainActivity.this,
+//                0, serviceIntent, 0);
+//
+//        // We want the alarm to go off 5 seconds from now.
+//        long firstTime = SystemClock.elapsedRealtime();
+//
+//        // Schedule the alarm!
+//        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+//        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+//                        firstTime, 5*1000, mAlarmSender);
+//
+////        // Tell the user about what we did.
+////        Toast.makeText(AlarmService.this, R.string.repeating_scheduled,
+////                Toast.LENGTH_LONG).show();
         
-        serviceIntent.putExtra(PREF_AUTHTOKEN, mAuthToken);
-        serviceIntent.putExtra(PREF_EMAIL, mEmail);
-        
-        mAlarmSender = PendingIntent.getService(MainActivity.this,
-                0, serviceIntent, 0);
-
-        // We want the alarm to go off 5 seconds from now.
-        long firstTime = SystemClock.elapsedRealtime();
-
-        // Schedule the alarm!
-        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        firstTime, 5*1000, mAlarmSender);
-
-//        // Tell the user about what we did.
-//        Toast.makeText(AlarmService.this, R.string.repeating_scheduled,
-//                Toast.LENGTH_LONG).show();
+        DataCollectorService collectorService = new DataCollectorService(mEmail, mAuthToken);
+        collectorService.start();
 
     }
     

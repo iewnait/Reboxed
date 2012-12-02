@@ -1,10 +1,10 @@
 package com.example.reboxed;
 
 public class SensorData {
-    public String smoke;
-    public String motion;
+    public float smoke;
+    public float motion;
     // this is stupid
-    public String accel;
+    public float accel;
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
