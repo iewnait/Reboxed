@@ -69,6 +69,17 @@ public class DataCollectorService extends Thread implements SensorEventListener 
         
         this.mSensorDataHistory = new SensorDataHistory(20);
         ioio_ = IOIOFactory.create();
+                
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Thread#run()
+     */
+    @Override
+    public void run() {
+        Log.d(TAG, "Begin mAcceptThread on: " + this);
+        setName("CollectorThread");
+        
         Log.d(TAG, "Waiting for IOIO");
         try {
             ioio_.waitForConnect();
@@ -99,16 +110,6 @@ public class DataCollectorService extends Thread implements SensorEventListener 
         }
 
         }, delay, period);        
-                
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Thread#run()
-     */
-    @Override
-    public void run() {
-        Log.d(TAG, "Begin mAcceptThread on: " + this);
-        setName("CollectorThread");
 
         while(true) {    
             mSensorDataHistory.addSensorData(getSensorData());
