@@ -28,9 +28,9 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         
-         <service android:name="ReboxedService" >
-             android:process=":Reboxed_monitor""
-        </service>
+        <service android:name=".SensorService" android:process=":remote" />
+        
+         <receiver android:name=".UpdateSensorService" android:process=":remote" />
     </application>
 
 </manifest>

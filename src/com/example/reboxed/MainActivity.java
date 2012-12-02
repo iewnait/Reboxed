@@ -1,10 +1,14 @@
 package com.example.reboxed;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity{
     // For Debugging
@@ -13,8 +17,12 @@ public class MainActivity extends Activity{
     //Shared Preferences
     private SharedPreferences mAuthCaches;
     public static final String PREF_AUTHTOKEN = "ReboxedAuthToken";
+    public static final String PREF_EMAIL = "ReboxedEmail";
     
     private String mAuthToken = null;
+    private String mEmail = null;
+    
+    private PendingIntent mAlarmSender;
     
     public static final int ACTIVITY_LOGIN = 0;
 
@@ -24,7 +32,24 @@ public class MainActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);                
-        setContentView(R.layout.main);        
+        setContentView(R.layout.main);
+        
+        mAuthCaches = getSharedPreferences("ReboxedPreferences", MODE_PRIVATE);
+        
+        if(isAuthenicated()){
+            TextView textView = (TextView) findViewById(R.id.textview);
+            textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
+            textView.setText(mAuthCaches.getString(PREF_EMAIL, "EmailNULL"));
+            
+            //set alarm
+            setAlarm();
+            
+        }
+        else {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivityForResult(i, ACTIVITY_LOGIN);
+        }
+
     }      
   
     
@@ -38,8 +63,10 @@ public class MainActivity extends Activity{
         if(requestCode == MainActivity.ACTIVITY_LOGIN){
             if(resultCode == LoginActivity.LOGIN_SUCCESS_RESULT_CODE){
                 mAuthToken = data.getExtras().getString(PREF_AUTHTOKEN);
+                mEmail = data.getExtras().getString(PREF_EMAIL);
                 SharedPreferences.Editor prefEditor = mAuthCaches.edit();
                 prefEditor.putString(PREF_AUTHTOKEN, mAuthToken);
+                prefEditor.putString(PREF_EMAIL, mEmail);
                 prefEditor.commit();                
             }
             else {
@@ -65,25 +92,43 @@ public class MainActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        
-        mAuthCaches = getSharedPreferences("ReboxedPreferences", MODE_PRIVATE);
-        
+
         if(isAuthenicated()){
             TextView textView = (TextView) findViewById(R.id.textview);
             textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
+            textView.setText(mAuthCaches.getString(PREF_EMAIL, "EmailNULL"));
             
-            
-            
+            //set alarm
+            setAlarm();
+
         }
-        else {
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivityForResult(i, ACTIVITY_LOGIN);
-        }
+    }
+    
+    private void setAlarm(){
+        
+        Intent serviceIntent = new Intent(MainActivity.this, SensorService.class);
+        
+        serviceIntent.putExtra(PREF_AUTHTOKEN, mAuthToken);
+        serviceIntent.putExtra(PREF_EMAIL, mEmail);
+        
+        mAlarmSender = PendingIntent.getService(MainActivity.this,
+                0, serviceIntent, 0);
+
+        // We want the alarm to go off 5 seconds from now.
+        long firstTime = SystemClock.elapsedRealtime();
+
+        // Schedule the alarm!
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        firstTime, 5*1000, mAlarmSender);
+
+//        // Tell the user about what we did.
+//        Toast.makeText(AlarmService.this, R.string.repeating_scheduled,
+//                Toast.LENGTH_LONG).show();
 
     }
     
     public boolean isAuthenicated(){
-        return mAuthCaches.contains(PREF_AUTHTOKEN);
-    }
-
+        return mAuthCaches.contains(PREF_AUTHTOKEN) && mAuthCaches.contains(PREF_EMAIL);
+    }            
 }

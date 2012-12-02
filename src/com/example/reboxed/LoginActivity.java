@@ -37,7 +37,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -79,13 +78,10 @@ public class LoginActivity extends Activity {
     private View mLoginStatusView;
     private TextView mLoginStatusMessageView;
     
-    private Gson mGson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        mGson = new Gson();
+        super.onCreate(savedInstanceState);        
 
         setContentView(R.layout.activity_login);
 
@@ -316,6 +312,7 @@ public class LoginActivity extends Activity {
             if (success) {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(MainActivity.PREF_AUTHTOKEN, mAuthToken);
+                resultIntent.putExtra(MainActivity.PREF_EMAIL, mEmail);
                 setResult(LOGIN_SUCCESS_RESULT_CODE, resultIntent);
                 finish();
             } else {

@@ -2,5 +2,9 @@
 
     <string name="app_name">Reboxed</string>
     <string name="welcome_text">Hello, Login successful!</string>
-
+    <string name="updating_sensor">Uploading Sensor data...</string>
+    <string name="sensor_service_started">Reboxed is collecting Sensor data..</string>
+    <string name="sensor_service_finished">Reboxed has finished uploading data</string>
+    <string name="sensor_service_label">Reboxed Sensor Service</string>
+    
 </resources>
