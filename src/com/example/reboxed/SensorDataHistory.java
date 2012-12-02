@@ -41,7 +41,7 @@ public class SensorDataHistory {
     }
     
     public void addSensorData(SensorData data) {
-        if(data.accel != Float.NaN){
+        if(data.accel < 200){
             mSensorDataArray[mCurrentSensorDataIndex++] = data;
             if (mCurrentSensorDataIndex >= mHistoryCapacity) mCurrentSensorDataIndex = 0;
             
