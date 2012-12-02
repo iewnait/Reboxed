@@ -6,5 +6,6 @@
     <string name="sensor_service_started">Reboxed is collecting Sensor data..</string>
     <string name="sensor_service_finished">Reboxed has finished uploading data</string>
     <string name="sensor_service_label">Reboxed Sensor Service</string>
+    <string name="sensor_connected">IOIO Connected</string>
     
 </resources>
