@@ -71,6 +71,9 @@ public class MainActivity extends Activity{
         if(isAuthenicated()){
             TextView textView = (TextView) findViewById(R.id.textview);
             textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
+            
+            
+            
         }
         else {
             Intent i = new Intent(this, LoginActivity.class);
