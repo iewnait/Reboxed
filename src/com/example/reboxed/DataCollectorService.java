@@ -25,6 +25,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import android.app.PendingIntent;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class DataCollectorService extends Thread {
@@ -37,11 +39,14 @@ public class DataCollectorService extends Thread {
     private AnalogInput mADC1; 
     private SensorDataHistory mSensorDataHistory;
     
+    private Handler mHandler;
+    
     private PendingIntent mAlarmSender;
     
-    public DataCollectorService(String email, String authToken){
+    public DataCollectorService(String email, String authToken, Handler handler){
         this.mEmail = email;
         this.mAuthToken = authToken;
+        this.mHandler = handler;
         this.mSensorDataHistory = new SensorDataHistory(20);
         ioio_ = IOIOFactory.create();
         Log.d(TAG, "Waiting for IOIO");
@@ -68,7 +73,7 @@ public class DataCollectorService extends Thread {
         timer.scheduleAtFixedRate(new TimerTask() {
 
         public void run() {
-
+            Log.d(TAG, "sendData....");
             sendDataToServer();
 
         }
@@ -156,6 +161,8 @@ public class DataCollectorService extends Thread {
             String responseText = EntityUtils.toString(entity);
          
             Log.d(TAG, responseText);
+            mHandler.obtainMessage(1, R.string.sensor_service_finished, -1).sendToTarget();
+
             
         }
         catch (UnsupportedEncodingException e) {

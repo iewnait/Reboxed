@@ -1,12 +1,12 @@
 package com.example.reboxed;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +25,20 @@ public class MainActivity extends Activity{
     private PendingIntent mAlarmSender;
     
     public static final int ACTIVITY_LOGIN = 0;
+    
+    private Handler mHandler = new Handler(){
+
+        /* (non-Javadoc)
+         * @see android.os.Handler#handleMessage(android.os.Message)
+         */
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1){
+                Toast.makeText(getApplicationContext(), msg.arg1, Toast.LENGTH_SHORT).show();
+            }
+        }
+        
+    };
 
     /* (non-Javadoc)
      * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -126,7 +140,7 @@ public class MainActivity extends Activity{
 ////        Toast.makeText(AlarmService.this, R.string.repeating_scheduled,
 ////                Toast.LENGTH_LONG).show();
         
-        DataCollectorService collectorService = new DataCollectorService(mEmail, mAuthToken);
+        DataCollectorService collectorService = new DataCollectorService(mEmail, mAuthToken, mHandler);
         collectorService.start();
 
     }
