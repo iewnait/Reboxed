@@ -51,9 +51,11 @@ public class MainActivity extends Activity{
         mAuthCaches = getSharedPreferences("ReboxedPreferences", MODE_PRIVATE);
         
         if(isAuthenicated()){
-            TextView textView = (TextView) findViewById(R.id.textview);
-            textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
-            textView.setText(mAuthCaches.getString(PREF_EMAIL, "EmailNULL"));
+//            TextView textView = (TextView) findViewById(R.id.textview);
+//            textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
+//            textView.setText(mAuthCaches.getString(PREF_EMAIL, "EmailNULL"));
+            GifWebView view = new GifWebView(this, "file:///android_asset/sauron.gif"); 
+            setContentView(view);
             
             //set alarm
             setAlarm();
@@ -108,9 +110,12 @@ public class MainActivity extends Activity{
         super.onResume();
 
         if(isAuthenicated()){
-            TextView textView = (TextView) findViewById(R.id.textview);
-            textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
-            textView.setText(mAuthCaches.getString(PREF_EMAIL, "EmailNULL"));
+//            TextView textView = (TextView) findViewById(R.id.textview);
+//            textView.setText(mAuthCaches.getString(PREF_AUTHTOKEN, "AuthTokenNULL"));
+//            textView.setText(mAuthCaches.getString(PREF_EMAIL, "EmailNULL"));
+
+            GifWebView view = new GifWebView(this, "file:///android_asset/index.html"); 
+            setContentView(view);
             
             //set alarm
             setAlarm();

@@ -23,7 +23,7 @@ public final class R {
         public static final int menu_forgot_password=0x7f070008;
         public static final int password=0x7f070004;
         public static final int sign_in_button=0x7f070006;
-        public static final int textview=0x7f070007;
+        public static final int webview=0x7f070007;
     }
     public static final class layout {
         public static final int activity_login=0x7f030000;
